@@ -1,0 +1,31 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Submission {
+  id                  Int      @id @default(autoincrement())
+  businessNumber      String
+  businessPlaceNumber String
+  phone               String
+  email               String
+  address             String
+  memo                String?
+  status              String   @default("접수완료")
+  adminMemo           String?
+  createdAt           DateTime @default(now())
+  images              Image[]
+}
+
+model Image {
+  id           Int        @id @default(autoincrement())
+  submissionId Int
+  imageUrl     String
+  imageType    String     @default("SITE")
+  // imageType 값: SITE(현장사진) | LICENSE(사업자등록증) | SIGNATURE(서명)
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+}
