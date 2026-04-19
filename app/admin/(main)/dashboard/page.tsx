@@ -134,6 +134,12 @@ export default async function DashboardPage({
                     이메일
                   </th>
                   <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    제품
+                  </th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    수량
+                  </th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     상태
                   </th>
                   <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -164,6 +170,18 @@ export default async function DashboardPage({
                     </td>
                     <td className="px-5 py-4 text-sm text-gray-700">
                       {sub.email}
+                    </td>
+                    <td className="px-5 py-4 text-sm text-gray-700 whitespace-nowrap">
+                      {sub.productType ? (
+                        <span className="inline-block px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs font-semibold">
+                          {sub.productType}
+                        </span>
+                      ) : (
+                        <span className="text-gray-300 text-xs">-</span>
+                      )}
+                    </td>
+                    <td className="px-5 py-4 text-sm text-gray-700 whitespace-nowrap">
+                      {sub.quantity != null ? `${sub.quantity}대` : <span className="text-gray-300 text-xs">-</span>}
                     </td>
                     <td className="px-5 py-4">
                       <span
