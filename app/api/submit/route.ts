@@ -97,6 +97,9 @@ export async function POST(request: NextRequest) {
     const email               = (formData.get('email')               as string)?.trim()
     const address             = (formData.get('address')             as string)?.trim()
     const memo                = (formData.get('memo')                as string)?.trim() ?? ''
+    const productType         = (formData.get('productType')         as string)?.trim()
+    const quantityRaw         = (formData.get('quantity')            as string)?.trim()
+    const quantity            = quantityRaw ? parseInt(quantityRaw, 10) : NaN
 
     // 필수 텍스트 검증
     if (!businessNumber || !businessPlaceNumber || !phone || !email || !address) {
@@ -108,6 +111,18 @@ export async function POST(request: NextRequest) {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json(
         { error: '올바른 이메일 형식이 아닙니다' },
+        { status: 400 }
+      )
+    }
+    if (!productType || !['2구', '3구'].includes(productType)) {
+      return NextResponse.json(
+        { error: '제품 종류를 선택해주세요' },
+        { status: 400 }
+      )
+    }
+    if (isNaN(quantity) || quantity < 1) {
+      return NextResponse.json(
+        { error: '수량을 1 이상으로 입력해주세요' },
         { status: 400 }
       )
     }
@@ -200,6 +215,8 @@ export async function POST(request: NextRequest) {
         email,
         address,
         memo,
+        productType,
+        quantity,
         images: { create: imageRecords },
       },
     })
