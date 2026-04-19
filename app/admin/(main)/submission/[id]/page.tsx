@@ -143,6 +143,29 @@ export default async function SubmissionDetailPage({
           <p className="font-medium text-gray-900">{submission.address}</p>
         </div>
 
+        {/* 제품 정보 */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">
+            제품 정보
+          </h3>
+          <dl className="space-y-4">
+            <div>
+              <dt className="text-xs text-gray-500 mb-0.5">제품 종류</dt>
+              <dd className="font-semibold text-gray-900 text-lg">
+                {submission.productType ?? <span className="text-gray-400 italic text-sm font-normal">미입력</span>}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-gray-500 mb-0.5">수량</dt>
+              <dd className="font-semibold text-gray-900 text-lg">
+                {submission.quantity != null
+                  ? `${submission.quantity}대`
+                  : <span className="text-gray-400 italic text-sm font-normal">미입력</span>}
+              </dd>
+            </div>
+          </dl>
+        </div>
+
         {/* 신청자 메모 */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">
