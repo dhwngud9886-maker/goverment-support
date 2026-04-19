@@ -10,6 +10,8 @@ interface FormState {
   email: string
   address: string
   memo: string
+  productType: string
+  quantity: string
 }
 
 interface FormErrors {
@@ -18,6 +20,8 @@ interface FormErrors {
   phone?: string
   email?: string
   address?: string
+  productType?: string
+  quantity?: string
   sitePhotos?: string
   businessLicense?: string
   signaturePhoto?: string
@@ -36,6 +40,8 @@ const INITIAL_FORM: FormState = {
   email: '',
   address: '',
   memo: '',
+  productType: '',
+  quantity: '',
 }
 
 function makePreview(file: File): ImagePreview {
@@ -156,7 +162,7 @@ export default function SubmissionPage() {
   const [businessLicense, setBusinessLicense] = useState<ImagePreview | null>(null)
   const [signaturePhoto, setSignaturePhoto] = useState<ImagePreview | null>(null)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
     if (errors[name as keyof FormErrors]) setErrors((prev) => ({ ...prev, [name]: '' }))
@@ -205,6 +211,9 @@ export default function SubmissionPage() {
       e.email = '올바른 이메일 형식이 아닙니다'
     }
     if (!form.address.trim()) e.address = '주소를 입력해주세요'
+    if (!form.productType) e.productType = '제품 종류를 선택해주세요'
+    const qty = parseInt(form.quantity)
+    if (!form.quantity || isNaN(qty) || qty < 1) e.quantity = '수량을 1 이상으로 입력해주세요'
     if (sitePhotos.length < 4)
       e.sitePhotos = `현장사진을 정확히 4장 업로드해주세요 (현재 ${sitePhotos.length}장)`
     else if (sitePhotos.length > 4)
@@ -231,6 +240,8 @@ export default function SubmissionPage() {
       fd.append('email',               form.email)
       fd.append('address',             form.address)
       fd.append('memo',                form.memo)
+      fd.append('productType',         form.productType)
+      fd.append('quantity',            form.quantity)
       sitePhotos.forEach((img) => fd.append('sitePhotos', img.file))
       if (businessLicense) fd.append('businessLicensePhoto', businessLicense.file)
       if (signaturePhoto)  fd.append('signaturePhoto',       signaturePhoto.file)
@@ -344,6 +355,50 @@ export default function SubmissionPage() {
                 className={`${CLS.input} ${errors.address ? 'border-red-400 bg-red-50' : 'border-gray-300'}`}
               />
               {errors.address && <p className={CLS.errTxt}>{errors.address}</p>}
+            </div>
+          </div>
+
+          {/* ── 제품 종류 & 수량 ── */}
+          <div className={CLS.card}>
+            <h2 className={CLS.h2}>
+              <span className="w-1.5 h-5 bg-blue-600 rounded-full inline-block flex-shrink-0" />
+              제품 정보
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              {/* 제품 종류 */}
+              <div data-error={!!errors.productType}>
+                <label className={CLS.label}>
+                  제품 종류 <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="productType"
+                  value={form.productType}
+                  onChange={handleChange}
+                  className={`${CLS.input} ${errors.productType ? 'border-red-400 bg-red-50' : 'border-gray-300'} bg-white`}
+                >
+                  <option value="">선택하세요</option>
+                  <option value="2구">2구</option>
+                  <option value="3구">3구</option>
+                </select>
+                {errors.productType && <p className={CLS.errTxt}>{errors.productType}</p>}
+              </div>
+
+              {/* 수량 */}
+              <div data-error={!!errors.quantity}>
+                <label className={CLS.label}>
+                  수량 <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  name="quantity"
+                  value={form.quantity}
+                  onChange={handleChange}
+                  min={1}
+                  placeholder="1"
+                  className={`${CLS.input} ${errors.quantity ? 'border-red-400 bg-red-50' : 'border-gray-300'}`}
+                />
+                {errors.quantity && <p className={CLS.errTxt}>{errors.quantity}</p>}
+              </div>
             </div>
           </div>
 
